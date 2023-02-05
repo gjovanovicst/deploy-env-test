@@ -13,7 +13,7 @@ jobs:
   deploy_preview:
     runs-on: ubuntu-latest
     env:
-      env: PREVIEW
+      env: preview
 
     steps:
     - name: Checkout code
@@ -42,7 +42,7 @@ jobs:
   deploy_production:
     runs-on: ubuntu-latest
     env:
-      env: PRODUCTION
+      env: production
 
     steps:
     - name: Checkout code
