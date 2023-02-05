@@ -42,30 +42,30 @@ jobs:
         TARGET_BRANCH: gh-pages
         BASE_DIR: ''
 
-    - name: Checkout code for Preview
-      if: env.PREVIEW_BRANCH
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.PREVIEW_BRANCH }}
-        submodules: recursive
+    # - name: Checkout code for Preview
+    #   if: env.PREVIEW_BRANCH
+    #   uses: actions/checkout@v2
+    #   with:
+    #     ref: ${{ env.PREVIEW_BRANCH }}
+    #     submodules: recursive
 
-    - name: Install dependencies for Preview
-      if: env.PREVIEW_BRANCH
-      run: |
-        npm ci
+    # - name: Install dependencies for Preview
+    #   if: env.PREVIEW_BRANCH
+    #   run: |
+    #     npm ci
 
-    - name: Build and test for Preview
-      if: env.PREVIEW_BRANCH
-      run: |
-        npm run build
+    # - name: Build and test for Preview
+    #   if: env.PREVIEW_BRANCH
+    #   run: |
+    #     npm run build
 
-    - name: Deploy to Preview
-      if: env.PREVIEW_BRANCH
-      uses: JamesIves/github-pages-deploy-action@releases/v3
-      with:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BRANCH: ${{ env.PREVIEW_BRANCH }}
-        FOLDER: www/
-        COMMIT_MESSAGE: Deploy to Preview
-        TARGET_BRANCH: gh-pages
-        BASE_DIR: 'preview'
+    # - name: Deploy to Preview
+    #   if: env.PREVIEW_BRANCH
+    #   uses: JamesIves/github-pages-deploy-action@releases/v3
+    #   with:
+    #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+    #     BRANCH: ${{ env.PREVIEW_BRANCH }}
+    #     FOLDER: www/
+    #     COMMIT_MESSAGE: Deploy to Preview
+    #     TARGET_BRANCH: gh-pages
+    #     BASE_DIR: 'preview'
