@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to multiple environments
 
 on:
   push:
@@ -6,36 +6,64 @@ on:
       - main
 
 env:
-  preview_branch: gh-pages-preview
-  production_branch: gh-pages-production
+  PREVIEW: preview
+  PRODUCTION: production
 
 jobs:
-  deploy-preview:
+  deploy_preview:
     runs-on: ubuntu-latest
+    env:
+      env: PREVIEW
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Build and Deploy to Preview Environment
-      uses: actions/github-pages@v3
-      env:
-        GITHUB_PAGES_BRANCH: ${{ env.preview_branch }}
-        PUBLISH_DIR: ./www
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
       with:
-        cname: preview.example.com
+        node-version: 14
 
-  deploy-production:
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build TypeScript
+      run: npm run build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./www
+        force_orphan: true
+        cname: ${{ env.env }}.example.com
+        branch: gh-pages-${{ env.env }}
+
+  deploy_production:
     runs-on: ubuntu-latest
+    env:
+      env: PRODUCTION
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Build and Deploy to Production Environment
-      uses: actions/github-pages@v3
-      env:
-        GITHUB_PAGES_BRANCH: ${{ env.production_branch }}
-        PUBLISH_DIR: ./www
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
       with:
-        cname: production.example.com
+        node-version: 14
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build TypeScript
+      run: npm run build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./www
+        force_orphan: true
+        cname: ${{ env.env }}.example.com
+        branch: gh-pages-${{ env.env }}
