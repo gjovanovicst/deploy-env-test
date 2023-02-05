@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  PREVIEW: Preview
-  PRODUCTION: Production
+  PREVIEW: preview
+  PRODUCTION: production
 
 jobs:
   deploy_preview:
