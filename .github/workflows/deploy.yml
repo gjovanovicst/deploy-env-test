@@ -1,71 +1,69 @@
-name: Deploy to Production and Preview Environments
+name: Deploy to multiple environments
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 env:
-  PRODUCTION_BRANCH: main
-  PREVIEW_BRANCH: develop
-  PRODUCTION_URL: https://gjovanovicst.github.io/deploy-env-test
-  PREVIEW_URL: https://gjovanovicst.github.io/deploy-env-test/preview
+  PREVIEW: preview
+  PRODUCTION: production
 
 jobs:
-  deploy:
+  deploy_preview:
     runs-on: ubuntu-latest
+    env:
+      env: PREVIEW
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
       with:
-        ref: ${{ env.PRODUCTION_BRANCH }}
-        submodules: recursive
+        node-version: 14
 
     - name: Install dependencies
-      run: |
-        npm ci
+      run: npm ci
 
-    - name: Build
-      run: |
-        npm run build
+    - name: Build TypeScript
+      run: npm run build
 
-    - name: Deploy to Production
-      if: env.PRODUCTION_BRANCH == env.GITHUB_REF
-      uses: JamesIves/github-pages-deploy-action@releases/v3
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BRANCH: ${{ env.PRODUCTION_BRANCH }}
-        FOLDER: www/
-        COMMIT_MESSAGE: Deploy to Production
-        TARGET_BRANCH: gh-pages
-        BASE_DIR: ''
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+        publish_dir: ./www
+        force_orphan: true
+        cname: ${{ env.env }}.example.com
+        branch: gh-pages-${{ env.env }}
 
-    # - name: Checkout code for Preview
-    #   if: env.PREVIEW_BRANCH
-    #   uses: actions/checkout@v2
-    #   with:
-    #     ref: ${{ env.PREVIEW_BRANCH }}
-    #     submodules: recursive
+  deploy_production:
+    runs-on: ubuntu-latest
+    env:
+      env: PRODUCTION
 
-    # - name: Install dependencies for Preview
-    #   if: env.PREVIEW_BRANCH
-    #   run: |
-    #     npm ci
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    # - name: Build and test for Preview
-    #   if: env.PREVIEW_BRANCH
-    #   run: |
-    #     npm run build
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
 
-    # - name: Deploy to Preview
-    #   if: env.PREVIEW_BRANCH
-    #   uses: JamesIves/github-pages-deploy-action@releases/v3
-    #   with:
-    #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-    #     BRANCH: ${{ env.PREVIEW_BRANCH }}
-    #     FOLDER: www/
-    #     COMMIT_MESSAGE: Deploy to Preview
-    #     TARGET_BRANCH: gh-pages
-    #     BASE_DIR: 'preview'
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build TypeScript
+      run: npm run build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+        publish_dir: ./www
+        force_orphan: true
+        cname: ${{ env.env }}.example.com
+        branch: gh-pages-${{ env.env }}
