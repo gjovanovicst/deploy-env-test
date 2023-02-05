@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "./www/",
+    "module": "commonjs",
+    "target": "es5",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "types": ["node"]
+  }
+}

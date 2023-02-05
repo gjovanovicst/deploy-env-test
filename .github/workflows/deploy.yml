@@ -1,0 +1,71 @@
+name: Deploy to Production and Preview Environments
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  PRODUCTION_BRANCH: main
+  PREVIEW_BRANCH: develop
+  PRODUCTION_URL: https://gjovanovicst.github.io/deploy-env-test
+  PREVIEW_URL: https://gjovanovicst.github.io/deploy-env-test/preview
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.PRODUCTION_BRANCH }}
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        npm ci
+
+    - name: Build
+      run: |
+        npm run build
+
+    - name: Deploy to Production
+      if: env.PRODUCTION_BRANCH == env.GITHUB_REF
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: ${{ env.PRODUCTION_BRANCH }}
+        FOLDER: www/
+        COMMIT_MESSAGE: Deploy to Production
+        TARGET_BRANCH: gh-pages
+        BASE_DIR: ''
+
+    - name: Checkout code for Preview
+      if: env.PREVIEW_BRANCH
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.PREVIEW_BRANCH }}
+        submodules: recursive
+
+    - name: Install dependencies for Preview
+      if: env.PREVIEW_BRANCH
+      run: |
+        npm ci
+
+    - name: Build and test for Preview
+      if: env.PREVIEW_BRANCH
+      run: |
+        npm run build
+
+    - name: Deploy to Preview
+      if: env.PREVIEW_BRANCH
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: ${{ env.PREVIEW_BRANCH }}
+        FOLDER: www/
+        COMMIT_MESSAGE: Deploy to Preview
+        TARGET_BRANCH: gh-pages
+        BASE_DIR: 'preview'
