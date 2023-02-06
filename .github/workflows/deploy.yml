@@ -4,10 +4,13 @@ on:
   push:
     branches:
       - main
+      - develop
       
 env:
   PREVIEW: preview
   PRODUCTION: production
+  PRODUCTION_BRANCH: main
+  PREVIEW_BRANCH: develop
 
 jobs:
   deploy_preview:
@@ -18,6 +21,8 @@ jobs:
     environment: 
       name: preview
       url: https://gjovanovicst.github.io/deploy-env-test  
+
+    if: env.BRANCH == env.PREVIEW_BRANCH
 
     steps:
     - name: Checkout code
@@ -40,7 +45,6 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         publish_dir: ./www
         force_orphan: true
-        cname: ${{ env.env }}.example.com
         branch: gh-pages-${{ env.env }}
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -53,6 +57,8 @@ jobs:
     environment: 
       name: production
       url: https://gjovanovicst.github.io/deploy-env-test  
+
+    if: env.BRANCH == env.PRODUCTION_BRANCH
     
     steps:
     - name: Checkout code
@@ -75,7 +81,6 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         publish_dir: ./www
         force_orphan: true
-        cname: ${{ env.env }}.example.com
         branch: gh-pages-${{ env.env }}
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
