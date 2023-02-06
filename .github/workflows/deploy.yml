@@ -15,8 +15,9 @@ jobs:
     env:
       env: preview
 
-    environment: preview
-    environment-url: https://gjovanovicst.github.io/deploy-env-test
+    environment: 
+      name: preview
+      url: https://gjovanovicst.github.io/deploy-env-test  
 
     steps:
     - name: Checkout code
@@ -49,8 +50,9 @@ jobs:
     env:
       env: production
 
-    environment: production
-    environment-url: https://gjovanovicst.github.io/deploy-env-test
+    environment: 
+      name: production
+      url: https://gjovanovicst.github.io/deploy-env-test  
     
     steps:
     - name: Checkout code
