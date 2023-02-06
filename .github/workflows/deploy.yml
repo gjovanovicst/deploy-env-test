@@ -22,7 +22,7 @@ jobs:
       name: preview
       url: https://gjovanovicst.github.io/deploy-env-test  
 
-    if: env.BRANCH == env.PREVIEW_BRANCH
+    if: github.ref == env.PREVIEW_BRANCH
 
     steps:
     - name: Checkout code
@@ -58,7 +58,7 @@ jobs:
       name: production
       url: https://gjovanovicst.github.io/deploy-env-test  
 
-    if: env.BRANCH == env.PRODUCTION_BRANCH
+    if: github.ref == env.PRODUCTION_BRANCH
     
     steps:
     - name: Checkout code
