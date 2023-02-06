@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   PREVIEW: preview
@@ -14,15 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       env: preview
-
+    environment: preview
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Upload artifacts
-      uses: actions/upload-artifacts@v1
-      with:
-        path: ./www
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -50,15 +46,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       env: production
-
+    environment: production
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Upload artifacts
-      uses: actions/upload-artifacts@v1
-      with:
-        path: ./www
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
