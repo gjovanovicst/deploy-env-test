@@ -19,6 +19,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Upload artifacts
+      uses: actions/upload-artifacts@v2
+      with:
+        path: ./www
+
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
@@ -38,6 +43,8 @@ jobs:
         force_orphan: true
         cname: ${{ env.env }}.example.com
         branch: gh-pages-${{ env.env }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy_production:
     runs-on: ubuntu-latest
@@ -48,6 +55,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Upload artifacts
+      uses: actions/upload-artifacts@v2
+      with:
+        path: ./www
+
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
@@ -67,3 +79,5 @@ jobs:
         force_orphan: true
         cname: ${{ env.env }}.example.com
         branch: gh-pages-${{ env.env }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
